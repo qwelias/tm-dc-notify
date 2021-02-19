@@ -3,6 +3,7 @@ import DC, { Channel, TextChannel } from 'discord.js'
 let channel: TextChannel
 
 export const send = async (text: string) => {
+    console.log(text)
     return channel && channel.send(text).catch(console.warn)
 }
 

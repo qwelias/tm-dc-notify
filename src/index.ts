@@ -4,12 +4,13 @@ DE.config()
 import { send } from './discord'
 import { poll, Player, hash } from './poll'
 
+const VIPs = process.env.VIPS?.split(';') || []
+
 setInterval(async () => {
     const users = await poll().catch(console.error) || {}
 
     for (const [k, v] of Object.entries(onlines))  {
         if (!(k in users)) {
-            console.log('-', k)
             send(`- **${k}**`)
             delete onlines[k]
         }
@@ -17,13 +18,11 @@ setInterval(async () => {
 
     for (const [k, v] of Object.entries(users)) {
         const msg = `**${k}** as ${'`'+v.name+'`'}`
-            + (v.server ? ` on tmtp://#join=${v.server}` : '')
+            + (v.server ? ` on __tmtp://#join=${v.server}__` : '')
 
         if (!(k in onlines)) {
-            console.log('+', k, v)
-            send('+ ' + msg)
+            send('+ ' + msg + (VIPs.includes(k) ? ' @here' : ''))
         } else if (onlines[k] !== hash(v)) {
-            console.log('=', k, v)
             send('= ' + msg)
         }
         onlines[k] = hash(v)
