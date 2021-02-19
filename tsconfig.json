@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "ES2020",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "paths": {
+            "linkedom": ["./linkedom.d.ts"]
+        }
+    },
+    "include": [
+        "src/*.ts"
+    ]
+}
