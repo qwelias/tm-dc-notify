@@ -1,11 +1,13 @@
-import DC, { Channel, TextChannel } from 'discord.js'
+import DC, { TextChannel } from 'discord.js'
+
+export const edit = async (text: string) => {
+    const msg = channel?.messages.cache.last()
+    if (msg?.content === text) return
+
+    return msg?.edit(text)
+}
 
 let channel: TextChannel
-
-export const send = async (text: string) => {
-    console.log(text)
-    return channel && channel.send(text).catch(console.warn)
-}
 
 const ded = (...args: any[]) => {
     console.error(...args)
@@ -15,8 +17,9 @@ const ded = (...args: any[]) => {
 const client = new DC.Client();
 client.once('disconnect', ded)
 client.once('error', ded)
-client.once('ready', () => {
+client.once('ready', async () => {
     channel = client.channels.cache.get(process.env.CHANNEL as string) as TextChannel
+    channel.messages.fetch()
 });
 client.login(process.env.TOKEN);
 
