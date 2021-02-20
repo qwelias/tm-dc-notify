@@ -1,7 +1,7 @@
 import DE from 'dotenv'
 DE.config()
 
-import { edit } from './discord'
+import { send } from './discord'
 import { poll, Player, hash } from './poll'
 
 const VIPs = process.env.VIPS?.split(';') || []
@@ -14,5 +14,12 @@ setInterval(async () => {
         + (server ? ` on __tmtp://#join=${server}__` : '')
     }).join('\n')
 
-    edit(msg || 'ded gaem').catch(console.warn)
+    const liveVips = Object.keys(users).filter(u => VIPs.includes(u)).sort()
+    send(
+        msg || 'ded gaem',
+        liveVips.some(u => !lastVips.includes(u))
+    ).catch(console.warn)
+    lastVips = liveVips
 }, 5000)
+
+let lastVips: string[] = []

@@ -1,10 +1,15 @@
 import DC, { TextChannel } from 'discord.js'
 
-export const edit = async (text: string) => {
+export const send = async (text: string, upd?: boolean) => {
     const msg = channel?.messages.cache.last()
     if (msg?.content === text) return
 
-    return msg?.edit(text)
+    if (!upd && msg) return msg?.edit(text)
+
+    return Promise.all([
+        msg?.delete(),
+        channel?.send(text),
+    ])
 }
 
 let channel: TextChannel
@@ -20,7 +25,6 @@ client.once('error', ded)
 client.once('ready', async () => {
     channel = client.channels.cache.get(process.env.CHANNEL as string) as TextChannel
     await channel.messages.fetch()
-    if (!channel.messages.cache.size) channel.send('hello')
 });
 client.login(process.env.TOKEN);
 
