@@ -19,7 +19,8 @@ client.once('disconnect', ded)
 client.once('error', ded)
 client.once('ready', async () => {
     channel = client.channels.cache.get(process.env.CHANNEL as string) as TextChannel
-    channel.messages.fetch()
+    await channel.messages.fetch()
+    if (!channel.messages.cache.size) channel.send('hello')
 });
 client.login(process.env.TOKEN);
 
