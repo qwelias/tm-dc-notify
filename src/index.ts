@@ -14,5 +14,5 @@ setInterval(async () => {
         + (server ? ` on __tmtp://#join=${server}__` : '')
     }).join('\n')
 
-    edit(msg).catch(console.warn)
+    edit(msg || 'ded gaem').catch(console.warn)
 }, 5000)
