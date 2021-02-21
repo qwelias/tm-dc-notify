@@ -19,3 +19,6 @@
     CHANNEL=<discord channel id>
     VIPS=<usernames to notify on, ';' separated>
     ```
+
+## How-to
+Read [`Dockerfile`](Dockerfile), it's good for you :)
