@@ -16,8 +16,9 @@
     LOGIN=<your tm username>
     PASSWORD=<your tm password>
     TOKEN=<your discord bot token>
-    CHANNEL=<discord channel id>
-    VIPS=<usernames to notify on, ';' separated>
+    FRIENDS_CHANNEL=<discord channel id for friends updates>
+    VIPS=<friends usernames to notify on, ';' separated>
+    DEDI_CHANNEL=<discord channel id for dedi updates>
     ```
 
 ## How-to
