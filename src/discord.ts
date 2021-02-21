@@ -1,7 +1,8 @@
 import DC, { TextChannel } from 'discord.js'
 
-export const send = async (text: string, upd?: boolean) => {
-    const msg = channel?.messages.cache.last()
+export const sendFriends = async (text: string, upd?: boolean) => {
+    const msg = friendsChannel?.messages.cache.last()
+    console.log(text)
     if (msg?.content === text) return
 
     if (!upd && msg) return msg?.edit(text)
@@ -12,7 +13,12 @@ export const send = async (text: string, upd?: boolean) => {
     ])
 }
 
-let channel: TextChannel
+export const sendDedi = async (text: string) => {
+    return dedisChannel.send(text)
+}
+
+let friendsChannel: TextChannel
+let dedisChannel: TextChannel
 
 const ded = (...args: any[]) => {
     console.error(...args)
@@ -23,8 +29,9 @@ const client = new DC.Client();
 client.once('disconnect', ded)
 client.once('error', ded)
 client.once('ready', async () => {
-    channel = client.channels.cache.get(process.env.CHANNEL as string) as TextChannel
-    await channel.messages.fetch()
+    dedisChannel = client.channels.cache.get(process.env.DEDIS_CHANNEL as string) as TextChannel
+    friendsChannel = client.channels.cache.get(process.env.FRIENDS_CHANNEL as string) as TextChannel
+    await friendsChannel.messages.fetch()
 });
 client.login(process.env.TOKEN);
 
