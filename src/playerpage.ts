@@ -39,8 +39,8 @@ const login = async (cookie: string) => request(
     {
         method: 'POST',
         body: qs.stringify({
-            login: process.env.LOGIN,
-            password: process.env.PASSWORD,
+            login: process.env.F_LOGIN,
+            password: process.env.F_PASSWORD,
             application: '',
             userlogin: '',
             redirection: '',

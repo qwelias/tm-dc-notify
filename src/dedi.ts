@@ -24,12 +24,22 @@ const getRecs = async (uid: string, since: number, top: number) => {
     const res = await request(qs.stringify({ Uid: uid, Show: 'RECORDS' }))
 
     const { document } = parseHTML(await res.text())
-    const rows = getRows(document)
+    const rows = getRows(document).map(tr => readRow(tr) || [])
 
-    return rows.map(tr => {
-        const [,, username, name, rank,, time,,,,,, at] = readRow(tr) || []
-        if (Number(rank) < top && Date.parse(at) > since) return [username, name, Number(rank), time]
+    let maxVipPos = -1
+    let minRecPos = top + 1
+    const recs = rows.map(([,, login, name, rankS,, time,,,,,, at]) => {
+        const rank = Number(rankS)
+        if (VIPs.includes(login)) maxVipPos = Math.max(maxVipPos, rank)
+
+        if (rank > top || Date.parse(at) < since) return
+
+        minRecPos = Math.min(minRecPos, rank)
+        return [login, name, rank, time]
     }).filter(Boolean) as Array<[string, string, number, string]>
+
+    if (minRecPos > maxVipPos) return []
+    return recs
 }
 
 const getUids = async (since: number) => {
@@ -62,3 +72,5 @@ const request = makeRequest('http://dedimania.net/tmstats/?do=stat&', {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36',
     }
 })
+
+const VIPs = process.env.D_VIPS?.split(';') || []
