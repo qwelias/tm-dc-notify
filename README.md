@@ -1,25 +1,37 @@
-# TM friends notification for Discord
+# TMUF notification for Discord
 
 ## How it works
-1. Logs into player.trackmania.com and reads your buddy list from there
-1. Checks if any online players are in VIPS list and just logged in
-1. Posts a new message and deletes the old one if there's any VIPS, otherwise edits old message
+- Live friends updates:
+    1. Logs into player.trackmania.com and reads your buddy list from there
+    1. Checks if any online players are in `F_VIPS` list and just logged in
+    1. Posts a new message and deletes the old one if any of `F_VIPS` just logged in, otherwise edits old message
+- Dedimania notifications:
+    1. Gets updated maps from [here](http://dedimania.net/tmstats/?do=stat&Envir=TMU-Island&MapOrder=MAP-DESC&Show=MAPS)
+    1. Gets all records for those maps
+    1. Notifies only on records that are within `D_TOP` and that are higher than any rec of `D_VIPS`
 
 ## Requirement
-- node 14+
+- `nodejs 14+` or `docker`
 - discord bot
-- empty discord channel
+- for live friends updates:
+    - empty discord channel
+    - TM account with some friends
 
 ## Setup
-- `.env` file with
+- create `.env` file with
     ```
-    LOGIN=<your tm username>
-    PASSWORD=<your tm password>
-    TOKEN=<your discord bot token>
-    FRIENDS_CHANNEL=<discord channel id for friends updates>
-    VIPS=<friends usernames to notify on, ';' separated>
-    DEDI_CHANNEL=<discord channel id for dedi updates>
+    B_TOKEN=<your dc bot token>
+    F_LOGIN=<your tm login>
+    F_PASSWORD=<your tm password>
+    F_CHANNEL=<friends updates channel id>
+    F_VIPS=<friends user logins, ';'-separated list>
+    D_VIPS=<dedi user logins, ';'-separated list>
+    D_CHANNEL=<dedi notifications channel id>
+    D_TOP=<how many positions too consider for dedi notification>
+    NODE_ENV=production
     ```
 
 ## How-to
-Read [`Dockerfile`](Dockerfile), it's good for you :)
+Either:
+- use `docker`
+- run `nodejs` manually as described in [Dockerfile](Dockerfile)
