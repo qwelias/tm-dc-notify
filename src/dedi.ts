@@ -39,7 +39,7 @@ const getRecs = async (uid: string, since: number, top: number) => {
     }).filter(Boolean) as Array<[string, string, number, string]>
 
     if (minRecPos > maxVipPos) return []
-    return recs
+    return recs.filter(([,, rank]) => rank <= maxVipPos)
 }
 
 const getUids = async (since: number) => {
