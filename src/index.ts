@@ -14,8 +14,9 @@ const run = async function* () {
 }
 
 const newDedis = ((since: number) => async () => {
-    const now = Date.now()
-    for await (const [track, author, recs] of getSince(since, 5)) {
+    const [lastUpdateAt, reader] = await getSince(since, 10)
+
+    for await (const [track, author, recs] of reader) {
         sendDedi([
             `Track: ${'`'+track+'`'} by **${author}**`,
             ...recs.map(
@@ -23,8 +24,8 @@ const newDedis = ((since: number) => async () => {
             )
         ].join('\n')).catch(console.warn)
     }
-    since = now
-})(Date.now())
+    since = lastUpdateAt
+})(Date.now() - 1000 * 60 * 5)
 
 const friendsOnline = ((lastVips: string[], VIPs: string[]) => async () => {
     const users = await poll().catch(console.error) || {}

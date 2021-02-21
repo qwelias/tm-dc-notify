@@ -1,6 +1,8 @@
 import DC, { TextChannel } from 'discord.js'
 
 export const sendFriends = async (text: string, upd?: boolean) => {
+    if (process.env.NODE_ENV !== 'production') return console.log(text, upd)
+
     const msg = friendsChannel?.messages.cache.last()
     if (msg?.content === text) return
 
@@ -13,6 +15,8 @@ export const sendFriends = async (text: string, upd?: boolean) => {
 }
 
 export const sendDedi = async (text: string) => {
+    if (process.env.NODE_ENV !== 'production') return console.log(text)
+
     return dedisChannel.send(text)
 }
 

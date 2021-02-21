@@ -6,9 +6,13 @@ import * as R from 'remeda'
 
 const wait = promisify(setTimeout)
 
-export const getSince = async function* (since: number, top: number = 10) {
-    const uids = await getUids(since)
+export const getSince = async (since: number, top: number = 10) => {
+    const [lasUpdateAt, uids] = await getUids(since)
 
+    return [lasUpdateAt, readTracks(uids, since, top)] as const
+}
+
+const readTracks = async function* (uids: Array<[string, string, string]>, since: number, top: number) {
     for (const [track, author, uid] of uids) {
         await wait(200)
         const recs = await getRecs(uid, since, top)
@@ -37,11 +41,15 @@ const getUids = async (since: number) => {
 
     const { document } = parseHTML(await res.text())
     const rows = getRows(document)
+    const [,,,,,,,,, lastUpdateAt] = readRow(rows[0]) || []
 
-    return rows.map(tr => {
-        const [, track,, author,,,,, uid, at] = readRow(tr) || []
-        if (Date.parse(at) > since) return [track, author, uid]
-    }).filter(Boolean) as Array<[string, string, string]>
+    return [
+        Date.parse(lastUpdateAt),
+        rows.map(tr => {
+            const [, track,, author,,,,, uid, at] = readRow(tr) || []
+            if (Date.parse(at) > since) return [track, author, uid]
+        }).filter(Boolean) as Array<[string, string, string]>,
+    ] as const
 }
 
 const getRows = (document: Document) =>
