@@ -12,9 +12,10 @@
 
 ## Setup
 - `.env` file with
-  > LOGIN=<your tm username>
+    ```
+    LOGIN=<your tm username>
     PASSWORD=<your tm password>
     TOKEN=<your discord bot token>
     CHANNEL=<discord channel id>
     VIPS=<usernames to notify on, ';' separated>
-
+    ```
