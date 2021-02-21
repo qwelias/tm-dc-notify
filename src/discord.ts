@@ -9,7 +9,7 @@ export const sendFriends = async (text: string, upd?: boolean) => {
 
     return Promise.all([
         msg?.delete(),
-        channel?.send(text),
+        friendsChannel?.send(text),
     ])
 }
 
