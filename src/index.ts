@@ -25,7 +25,7 @@ const newDedis = ((since: number) => async () => {
         ].join('\n')).catch(console.warn)
     }
     since = lastUpdateAt
-})(Date.now() - 1000 * 60 * 500)
+})(Date.now() - 1000 * 60 * 5)
 
 const friendsOnline = ((lastVips: string[], VIPs: string[]) => async () => {
     const users = await poll().catch(console.error) || {}
