@@ -2,7 +2,6 @@ import DC, { TextChannel } from 'discord.js'
 
 export const sendFriends = async (text: string, upd?: boolean) => {
     const msg = friendsChannel?.messages.cache.last()
-    console.log(text)
     if (msg?.content === text) return
 
     if (!upd && msg) return msg?.edit(text)
