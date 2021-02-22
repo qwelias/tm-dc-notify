@@ -32,7 +32,7 @@ const getRecs = async (uid: string, since: number, top: number) => {
         const rank = Number(rankS)
         if (VIPs.includes(login)) maxVipPos = Math.max(maxVipPos, rank)
 
-        if (rank > top || Date.parse(at) < since) return
+        if (rank > top || Date.parse(at) <= since) return
 
         minRecPos = Math.min(minRecPos, rank)
         return [login, name, rank, time, mode]
