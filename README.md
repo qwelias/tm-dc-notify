@@ -28,6 +28,8 @@
     D_VIPS=<dedi user logins, ';'-separated list>
     D_CHANNEL=<dedi notifications channel id>
     D_TOP=<how many positions too consider for dedi notification>
+    D_MODE<TAttack or Rounds>
+    D_MIN=<filter tracks by min number of records>
     NODE_ENV=production
     ```
 

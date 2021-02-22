@@ -4,6 +4,9 @@ import qs from 'querystring'
 import { promisify } from 'util'
 import * as R from 'remeda'
 
+const MODE = process.env.D_MODE
+const MIN_RECS = Number(process.env.D_MIN)
+
 const wait = promisify(setTimeout)
 
 export const getSince = async (since: number, top: number = 10) => {
@@ -21,25 +24,34 @@ const readTracks = async function* (uids: Array<[string, string, string]>, since
 }
 
 const getRecs = async (uid: string, since: number, top: number) => {
-    const res = await request(qs.stringify({ Uid: uid, Show: 'RECORDS' }))
+    const res = await request(qs.stringify({
+        Uid: uid,
+        Show: 'RECORDS',
+        RecOrder3: 'RANK-ASC',
+    }))
 
     const { document } = parseHTML(await res.text())
     const rows = getRows(document).map(tr => readRow(tr) || [])
 
+    let maxRank = -1
     let maxVipPos = -1
     let minRecPos = top + 1
     const recs = rows.map(([,, login, name, rankS,, time, mode,,,,, at]) => {
+        if (mode !== MODE) return
+
         const rank = Number(rankS)
+        maxRank = Math.max(maxRank, rank)
         if (VIPs.includes(login)) maxVipPos = Math.max(maxVipPos, rank)
 
-        if (rank > top || Date.parse(at) <= since) return
+        if (rank > top) return
 
-        minRecPos = Math.min(minRecPos, rank)
-        return [login, name, rank, time, mode]
-    }).filter(Boolean) as Array<[string, string, number, string, string]>
+        const up = Date.parse(at) > since
+        if (up) minRecPos = Math.min(minRecPos, rank)
+        return [rank, login, name, time, up]
+    }).filter(Boolean) as Array<[number, string, string, string, string]>
 
-    if (minRecPos > maxVipPos) return []
-    return [res.url, recs.filter(([,, rank]) => rank <= maxVipPos)] as const
+    if (minRecPos > maxVipPos || minRecPos > top || maxRank < MIN_RECS) return []
+    return [res.url, recs] as const
 }
 
 const getUids = async (since: number) => {

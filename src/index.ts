@@ -21,8 +21,8 @@ const newDedis = ((since: number) => async () => {
             url,
             `${fmt.ub(track)} by ${fmt.p(author)}`,
             recs.map(
-                ([login, name, rank, time, mode]) =>
-                    `${fmt.ub('#'+rank)} ${fmt.b(name)} ${fmt.p(login)} ${fmt.ui(time)} ${fmt.i(mode)}`
+                ([rank, login, name, time, up]) =>
+                    `${fmt[up ? 'ub' : 'b']('#'+rank)} ${fmt.b(name)} ${fmt.p(login)} ${fmt.ui(time)}`
             ).join('\n')
         ).catch(console.warn)
     }
