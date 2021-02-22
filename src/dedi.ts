@@ -41,8 +41,8 @@ const getRecs = async (uid: string, since: number, top: number) => {
 
         const rank = Number(rankS)
         maxRank = Math.max(maxRank, rank)
-        if (VIPs.includes(login)) maxVipPos = Math.max(maxVipPos, rank)
 
+        if (VIPs.includes(login)) maxVipPos = Math.max(maxVipPos, rank)
         if (rank > top) return
 
         const up = Date.parse(at) > since
@@ -50,7 +50,11 @@ const getRecs = async (uid: string, since: number, top: number) => {
         return [rank, login, name, time, up]
     }).filter(Boolean) as Array<[number, string, string, string, string]>
 
-    if (minRecPos > maxVipPos || minRecPos > top || maxRank < MIN_RECS) return []
+    if (
+        minRecPos > maxVipPos || // VIPs didnt move
+        minRecPos > top || // insignificant record
+        maxRank < MIN_RECS // track isnt hunted by enough players
+    ) return []
     return [res.url, recs] as const
 }
 
