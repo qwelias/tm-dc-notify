@@ -16,13 +16,15 @@ const run = async function* () {
 const newDedis = ((since: number) => async () => {
     const [lastUpdateAt, reader] = await getSince(since, Number(process.env.D_TOP))
 
-    for await (const [track, author, recs] of reader) {
-        sendDedi([
-            `Track: ${fmt.b(track)} by ${fmt.p(author)}`,
-            ...recs.map(
-                ([login, name, rank, time]) => `${fmt.ub('#'+rank)} ${fmt.b(name)} (${fmt.p(login)}) ${fmt.ui(time)}`
-            )
-        ].join('\n')).catch(console.warn)
+    for await (const [url, track, author, recs] of reader) {
+        sendDedi(
+            url,
+            `${fmt.ub(track)} by ${fmt.p(author)}`,
+            recs.map(
+                ([login, name, rank, time, mode]) =>
+                    `${fmt.ub('#'+rank)} ${fmt.b(name)} ${fmt.p(login)} ${fmt.ui(time)} ${fmt.i(mode)}`
+            ).join('\n')
+        ).catch(console.warn)
     }
     since = lastUpdateAt
 })(Date.now() - 1000 * 60 * 5)
@@ -31,7 +33,7 @@ const friendsOnline = ((lastVips: string[], VIPs: string[]) => async () => {
     const users = await poll().catch(console.error) || {}
 
     const msg = Object.entries(users).map(([login, { name, server }]) => {
-        return `${fmt.b(name)} (${fmt.p(login)})`
+        return `${fmt.b(name)} ${fmt.p(login)}`
         + (server ? ` on ${fmt.u(`tmtp://#join=${server}`)}` : '')
     }).join('\n')
 

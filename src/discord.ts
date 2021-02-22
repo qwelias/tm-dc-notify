@@ -16,10 +16,10 @@ export const sendFriends = async (text: string, upd?: boolean) => {
     ])
 }
 
-export const sendDedi = async (text: string) => {
-    if (!isProd) return console.log(text)
+export const sendDedi = async (url: string, title: string, description: string) => {
+    if (!isProd) return console.log(url, title, description)
 
-    return dedisChannel?.send(text)
+    return dedisChannel?.send({ embed: { url, title, description } })
 }
 
 type StringLike = { toString(): string }

@@ -15,8 +15,8 @@ export const getSince = async (since: number, top: number = 10) => {
 const readTracks = async function* (uids: Array<[string, string, string]>, since: number, top: number) {
     for (const [track, author, uid] of uids) {
         await wait(200)
-        const recs = await getRecs(uid, since, top)
-        if (recs.length) yield [track, author, recs] as const
+        const [url, recs = []] = await getRecs(uid, since, top)
+        if (recs.length) yield [url, track, author, recs] as const
     }
 }
 
@@ -28,18 +28,18 @@ const getRecs = async (uid: string, since: number, top: number) => {
 
     let maxVipPos = -1
     let minRecPos = top + 1
-    const recs = rows.map(([,, login, name, rankS,, time,,,,,, at]) => {
+    const recs = rows.map(([,, login, name, rankS,, time, mode,,,,, at]) => {
         const rank = Number(rankS)
         if (VIPs.includes(login)) maxVipPos = Math.max(maxVipPos, rank)
 
         if (rank > top || Date.parse(at) < since) return
 
         minRecPos = Math.min(minRecPos, rank)
-        return [login, name, rank, time]
-    }).filter(Boolean) as Array<[string, string, number, string]>
+        return [login, name, rank, time, mode]
+    }).filter(Boolean) as Array<[string, string, number, string, string]>
 
     if (minRecPos > maxVipPos) return []
-    return recs.filter(([,, rank]) => rank <= maxVipPos)
+    return [res.url, recs.filter(([,, rank]) => rank <= maxVipPos)] as const
 }
 
 const getUids = async (since: number) => {
