@@ -22,7 +22,7 @@ const newDedis = ((since: number) => async () => {
             `${fmt.ub(lrm+track)} by ${fmt.p(author)}`,
             recs.map(
                 ([rank, login, name, time, up]) =>
-                    `${fmt[up ? 'ub' : 'u']('#'+rank)}: ${fmt.b(lrm+name)} ${fmt.p(login)} ${fmt.ui(time)}`
+                    `${fmt[up ? 'ub' : 'u']('#'+rank)}: ${fmt.b(lrm+name)} ${fmt.p(login)} ${fmt[up ? 'ubi' : 'ui'](time)}`
             ).join('\n')
         ).catch(console.warn)
     }
