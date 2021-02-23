@@ -47,7 +47,7 @@ const friendsOnline = ((lastVips: string[], VIPs: string[]) => async () => {
 
 const wait = promisify(setTimeout)
 
-const lrm = '&lrm;'
+const lrm = '\u200E'
 
 ;(async () => {
     for await (const iter of run()) await wait(5000, iter)
