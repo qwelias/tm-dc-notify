@@ -1,4 +1,5 @@
 import DC, { TextChannel } from 'discord.js'
+import fs from 'fs'
 
 const isProd = process.env.NODE_ENV === 'production'
 

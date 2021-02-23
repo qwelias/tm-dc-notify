@@ -19,10 +19,10 @@ const newDedis = ((since: number) => async () => {
     for await (const [url, track, author, recs] of reader) {
         sendDedi(
             url,
-            `${fmt.ub(track)} by ${fmt.p(author)}`,
+            `${fmt.ub(lrm+track)} by ${fmt.p(author)}`,
             recs.map(
                 ([rank, login, name, time, up]) =>
-                    `${fmt[up ? 'ub' : 'u']('#'+rank)}: ${fmt.b(name)} ${fmt.p(login)} ${fmt.ui(time)}`
+                    `${fmt[up ? 'ub' : 'u']('#'+rank)}: ${fmt.b(lrm+name)} ${fmt.p(login)} ${fmt.ui(time)}`
             ).join('\n')
         ).catch(console.warn)
     }
@@ -33,7 +33,7 @@ const friendsOnline = ((lastVips: string[], VIPs: string[]) => async () => {
     const users = await poll().catch(console.error) || {}
 
     const msg = Object.entries(users).map(([login, { name, server }]) => {
-        return `${fmt.b(name)} ${fmt.p(login)}`
+        return `${fmt.b(lrm+name)} ${fmt.p(login)}`
         + (server ? ` on ${fmt.u(`tmtp://#join=${server}`)}` : '')
     }).join('\n')
 
@@ -46,6 +46,8 @@ const friendsOnline = ((lastVips: string[], VIPs: string[]) => async () => {
 })([], process.env.F_VIPS?.split(';') || [])
 
 const wait = promisify(setTimeout)
+
+const lrm = '&lrm;'
 
 ;(async () => {
     for await (const iter of run()) await wait(5000, iter)
