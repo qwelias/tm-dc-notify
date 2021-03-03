@@ -60,7 +60,7 @@ const options = {
             `Play mode. Default: ${fmt.p('TAttack')}.`,
             `Either ${fmt.p('TAttack')} or ${fmt.p('Rounds')}.`,
         ].join('\n'),
-        set: (cfg: ChannelDedi, values: string[]) => cfg.mode = (values[0] ?? 'TAttack').toLowerCase(),
+        set: (cfg: ChannelDedi, values: string[]) => cfg.mode = (values[0] ?? 'TAttack'),
         get: (cfg: ChannelDedi) => cfg.mode,
     },
     env: {
@@ -68,7 +68,7 @@ const options = {
             'Environemet. Default: none (any).',
             'Consult dedimania.net for possible values.',
         ].join('\n'),
-        set: (cfg: ChannelDedi, values: string[]) => cfg.env = values[0]?.toLowerCase(),
+        set: (cfg: ChannelDedi, values: string[]) => cfg.env = values[0],
         get: (cfg: ChannelDedi) => cfg.env,
     },
     include_top: {
