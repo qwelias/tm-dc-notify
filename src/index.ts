@@ -1,6 +1,4 @@
 import './global'
-import DE from 'dotenv'
-DE.config()
 
 import { init, sendEmbed, sendUpdate, fmt } from './discord'
 import { poll } from './playerpage'

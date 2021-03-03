@@ -13,7 +13,6 @@
     "@types/node": "^14.14.29",
     "@types/node-fetch": "^2.5.8",
     "discord.js": "^12.5.1",
-    "dotenv": "^8.2.0",
     "linkedom": "^0.5.5",
     "node-fetch": "^2.6.1",
     "p-event": "^4.2.0",
