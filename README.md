@@ -13,15 +13,15 @@ All further configuration is done per discord channel, meaning that you can conf
     - TM account with some friends
 
 ## Setup
-- create `.env` file with
-    ```
-    B_TOKEN=<your dc bot token>
-    F_LOGIN=<your tm login>
-    F_PASSWORD=<your tm password>
-    F_CHANNEL=<friends updates channel id>
-    F_VIPS=<friends user logins, ';'-separated list>
-    NODE_ENV=production
-    ```
+requires following environment variables:
+```
+B_TOKEN=<your dc bot token>
+F_LOGIN=<your tm login>
+F_PASSWORD=<your tm password>
+F_CHANNEL=<friends updates channel id>
+F_VIPS=<friends user logins, ';'-separated list>
+NODE_ENV=production
+```
 
 ## How-to
 Either:
