@@ -1,14 +1,9 @@
 # TMUF notification for Discord
+You can run it yourself, or you can ask me (`qwelias#5829`) to add it to your server,
+requires **Manage Server** permissions tho.
 
-## How it works
-- Live friends updates:
-    1. Logs into player.trackmania.com and reads your buddy list from there
-    1. Checks if any online players are in `F_VIPS` list and just logged in
-    1. Posts a new message and deletes the old one if any of `F_VIPS` just logged in, otherwise edits old message
-- Dedimania notifications:
-    1. Gets updated maps from [here](http://dedimania.net/tmstats/?do=stat&Envir=TMU-Island&MapOrder=MAP-DESC&Show=MAPS)
-    1. Gets all records for those maps
-    1. Notifies only on records that are within `D_TOP` and that are higher than any rec of `D_VIPS`
+Once it's on your server ask it something via mention -- you'll get some help.
+All further configuration is done per discord channel, meaning that you can configure different channels differently.
 
 ## Requirement
 - `nodejs 14+` or `docker`
@@ -25,11 +20,6 @@
     F_PASSWORD=<your tm password>
     F_CHANNEL=<friends updates channel id>
     F_VIPS=<friends user logins, ';'-separated list>
-    D_VIPS=<dedi user logins, ';'-separated list>
-    D_CHANNEL=<dedi notifications channel id>
-    D_TOP=<how many positions too consider for dedi notification>
-    D_MODE<TAttack or Rounds>
-    D_MIN=<filter tracks by min number of records>
     NODE_ENV=production
     ```
 

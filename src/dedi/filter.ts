@@ -8,10 +8,10 @@ export function* perChannel({ env, uid }: TrackUpdate, allRecs: RecUpdate[]) {
         if (
             !cfg.enabled ||
             (cfg.uids.length && !cfg.uids.includes(uid)) ||
-            (cfg.env && cfg.env !== env)
+            (cfg.env && cfg.env !== env.toLowerCase())
         ) continue
 
-        let recs = allRecs.filter(({ mode }) => mode === cfg.mode)
+        let recs = allRecs.filter(({ mode }) => mode.toLowerCase() === cfg.mode)
         if (recs.length < cfg.min_recs) continue
 
         recs = recs.slice(0, cfg.top)
