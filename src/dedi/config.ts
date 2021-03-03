@@ -83,7 +83,7 @@ const options = {
 
 const commands = Object.assign((ch: TextChannel) => commands.help(ch), {
     start: Object.assign((ch: TextChannel) => {
-        const cfg = config.dedi.channels[ch.id] || (config.dedi.channels[ch.id] = defaults)
+        const cfg = config.dedi.channels[ch.id] || (config.dedi.channels[ch.id] = getDefault())
         if (cfg.enabled) return ch.send(`You what?`)
 
         cfg.enabled = true
@@ -95,7 +95,7 @@ const commands = Object.assign((ch: TextChannel) => commands.help(ch), {
     }, { help: (ch: TextChannel) => ch.send('Enables dedi updates for the channel')}),
 
     stop: Object.assign((ch: TextChannel) => {
-        const cfg = config.dedi.channels[ch.id] || (config.dedi.channels[ch.id] = defaults)
+        const cfg = config.dedi.channels[ch.id] || (config.dedi.channels[ch.id] = getDefault())
         if (!cfg.enabled) return ch.send(`You what?`)
 
         cfg.enabled = false
@@ -159,7 +159,7 @@ const optionsMsg = 'Following options available:\n' + Object.keys(options).map(f
 
 const readable = (value: any) => value != null ? fmt.p(value) : fmt.i('empty')
 
-const defaults: ChannelDedi = {
+const getDefault = () => ({
     enabled: false,
     players: [],
     top: 30,
@@ -167,7 +167,7 @@ const defaults: ChannelDedi = {
     uids: [],
     mode: 'TAttack',
     include_top: false,
-}
+} as ChannelDedi)
 
 type CommandNode = ((ch: TextChannel, values?: string[]) => Promise<Message>) & { [sub: string]: CommandNode }
 
