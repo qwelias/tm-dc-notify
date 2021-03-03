@@ -1,4 +1,3 @@
-import * as R from 'remeda'
 import fetch, { RequestInit } from 'node-fetch'
 
 /**
@@ -6,7 +5,15 @@ import fetch, { RequestInit } from 'node-fetch'
  */
 export const makeRequest = (baseUrl: string, baseOptions: RequestInit = {}) =>
     (url: string, options?: RequestInit, status?: number) =>
-        request(baseUrl + url, R.mergeAll([{}, baseOptions, options]), status)
+        request(
+            baseUrl + url,
+            {
+                ...baseOptions,
+                ...options,
+                headers: { ...baseOptions.headers, ...options?.headers }
+            },
+            status,
+        )
 
 /**
  * Make request and throw on unexpected status code

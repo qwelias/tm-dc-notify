@@ -1,33 +1,42 @@
+import './global'
 import DE from 'dotenv'
 DE.config()
 
-import { sendFriends, sendDedi, fmt } from './discord'
+import { init, sendEmbed, sendUpdate, fmt } from './discord'
 import { poll } from './playerpage'
-import { getSince } from './dedi'
 import { promisify } from 'util'
+import * as config from './config'
+import * as dedi from './dedi'
 
 const run = async function* () {
+    await config.read()
+
+    dedi.config.handle(await init([
+        process.env.F_CHANNEL as string,
+        ...Object.keys(config.dedi.channels),
+    ].filter(Boolean))).catch((reason) => {
+        console.error(reason)
+        process.exit(1)
+    })
+
     while (true) yield Promise.all([
         friendsOnline(),
         newDedis(),
     ])
 }
 
-const newDedis = ((since: number) => async () => {
-    const [lastUpdateAt, reader] = await getSince(since, Number(process.env.D_TOP))
-
-    for await (const [url, track, author, recs] of reader) {
-        sendDedi(
+const newDedis = async () => {
+    for await (const [url, track, allRecs] of await dedi.mania.getNews()) {
+        for (const [chId, recs] of dedi.filter.perChannel(track, allRecs)) sendEmbed(
+            chId,
             url,
-            `${fmt.ub(lrm+track)} by ${fmt.p(author)}`,
-            recs.map(
-                ([rank, login, name, time, up]) =>
-                    `${fmt[up ? 'ub' : 'u']('#'+rank)}: ${fmt.b(lrm+name)} ${fmt.p(login)} ${fmt[up ? 'ubi' : 'ui'](time)}`
-            ).join('\n')
+            `${track.env}: ${fmt.ub(lrm+track.name)} by ${fmt.p(track.author)}`,
+            recs.map(({ rank, login, nick, time, up }) =>
+                `${fmt[up ? 'ub' : 'n']('#'+rank)}: ${fmt.b(lrm+nick)} ${fmt.p(login)} ${fmt[up ? 'ubi' : 'i'](time)}`
+            ).join('\n'),
         ).catch(console.warn)
     }
-    since = lastUpdateAt
-})(Date.now() - 1000 * 60 * 5)
+}
 
 const friendsOnline = ((lastVips: string[], VIPs: string[]) => async () => {
     const users = await poll().catch(console.error) || {}
@@ -38,7 +47,8 @@ const friendsOnline = ((lastVips: string[], VIPs: string[]) => async () => {
     }).join('\n')
 
     const liveVips = Object.keys(users).filter(u => VIPs.includes(u)).sort()
-    sendFriends(
+    sendUpdate(
+        process.env.F_CHANNEL as string,
         msg || ':(',
         liveVips.some(u => !lastVips.includes(u))
     ).catch(console.warn)

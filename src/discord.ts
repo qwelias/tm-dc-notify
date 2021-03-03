@@ -1,30 +1,52 @@
 import DC, { TextChannel } from 'discord.js'
-import fs from 'fs'
+import * as pEvent from 'p-event'
 
 const isProd = process.env.NODE_ENV === 'production'
+let client: DC.Client
 
-export const sendFriends = async (text: string, upd?: boolean) => {
-    if (!isProd) return console.log(text, upd)
+export const init = async function* (channelIds: string[]) {
+    if (client) return client
 
-    const msg = friendsChannel?.messages.cache.last()
+    client = new DC.Client()
+    client.once('disconnect', ded)
+    client.once('error', ded)
+    client.login(process.env.B_TOKEN)
+    await pEvent.default(client, 'ready')
+    await Promise.all(channelIds.map(cacheChannel))
+
+    yield* pEvent.iterator(client, 'message')
+}
+
+export const cacheChannel = (id: string) => client.channels.fetch(id)
+
+export const sendUpdate = async (id: string, text: string, upd?: boolean) => {
+    if (!isProd) return console.log(id, text, upd)
+    const channel = client.channels.cache.get(id) as TextChannel
+    if (!channel) return channel
+
+    if (!channel.messages.cache.size) await channel.messages.fetch()
+
+    const msg = channel.messages.cache.last()
     if (msg?.content === text) return
 
     if (!upd && msg) return msg?.edit(text)
 
     return Promise.all([
         msg?.delete(),
-        friendsChannel?.send(text),
+        channel?.send(text),
     ])
 }
 
-export const sendDedi = async (url: string, title: string, description: string) => {
-    if (!isProd) return console.log(url, title, description)
+export const sendEmbed = async (id: string, url: string, title: string, description: string) => {
+    if (!isProd) return console.log(id, url, title, description)
 
-    return dedisChannel?.send({ embed: { url, title, description } })
+    const channel = client.channels.cache.get(id) as TextChannel
+    return channel?.send({ embed: { url, title, description } })
 }
 
 type StringLike = { toString(): string }
 export const fmt = {
+    n: (str: StringLike) => String(str),
     b: (str: StringLike) => `**${str}**`,
     p: (str: StringLike) => '`'+str+'`',
     i: (str: StringLike) => `*${str}*`,
@@ -37,22 +59,7 @@ export const fmt = {
     ubi: (str: StringLike) => fmt.u(fmt.b(fmt.i(str))),
 }
 
-
-let friendsChannel: TextChannel
-let dedisChannel: TextChannel
-
 const ded = (...args: any[]) => {
     console.error(...args)
     process.exit(1)
 }
-
-const client = new DC.Client();
-client.once('disconnect', ded)
-client.once('error', ded)
-client.once('ready', async () => {
-    dedisChannel = client.channels.cache.get(process.env.D_CHANNEL as string) as TextChannel
-    friendsChannel = client.channels.cache.get(process.env.F_CHANNEL as string) as TextChannel
-    await friendsChannel.messages.fetch()
-});
-client.login(process.env.B_TOKEN);
-

@@ -6,11 +6,6 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "strict": true,
-        "paths": {
-            "linkedom": ["./linkedom.d.ts"]
-        }
-    },
-    "include": [
-        "src/*.ts"
-    ]
+        "noErrorTruncation": true
+    }
 }
