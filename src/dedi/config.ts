@@ -3,9 +3,12 @@ import { fmt } from '../discord'
 import * as config from '../config'
 import * as R from 'remeda'
 
+const isProd = process.env.NODE_ENV === 'production'
+
 export const handle = async (msgIter: AsyncGenerator<Message>) => {
     for await (const msg of msgIter) {
-        if (!msg.content.startsWith(`<@!${msg.client.user?.id}> `)) continue
+        if (msg.author.bot) continue
+        if (!msg.content.startsWith(`<@!${msg.client.user?.id}>`)) continue
         if (!msg.channel.isText() || msg.channel.type === 'dm') {
             msg.channel.send('nonono')
             continue
@@ -13,14 +16,18 @@ export const handle = async (msgIter: AsyncGenerator<Message>) => {
 
         const [, ...tokens] = msg.content.split(/\s+/).filter(Boolean)
         let node: CommandNode = commands
+        const path = []
         while (tokens.length && Object.keys(node).length) {
             const sub = tokens[0]
             if (!(sub in node)) break
 
             node = node[sub]
             tokens.shift()
+            path.push(sub)
         }
-        await node(msg.channel as TextChannel, tokens).catch(reason => console.warn(reason))
+
+        if (!isProd) console.log(node, path, tokens)
+        else await node(msg.channel as TextChannel, tokens).catch(reason => console.warn(reason))
     }
 }
 
