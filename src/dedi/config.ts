@@ -8,7 +8,10 @@ const isProd = process.env.NODE_ENV === 'production'
 export const handle = async (msgIter: AsyncGenerator<Message>) => {
     for await (const msg of msgIter) {
         if (msg.author.bot) continue
-        if (!msg.content.startsWith(`<@!${msg.client.user?.id}>`)) continue
+        if (
+            !msg.content.startsWith(`<@!${msg.client.user?.id}>`) &&
+            !msg.content.startsWith(`<@${msg.client.user?.id}>`)
+        ) continue
         if (!msg.channel.isText() || msg.channel.type === 'dm') {
             msg.channel.send('nonono')
             continue
