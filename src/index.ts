@@ -29,8 +29,8 @@ const newDedis = async () => {
             chId,
             url,
             `${track.env}: ${fmt.ub(lrm+track.name)} by ${fmt.p(track.author)}`,
-            recs.map(({ rank, login, nick, time, up }) =>
-                `${fmt[up ? 'ub' : 'n']('#'+rank)}: ${fmt.b(lrm+nick)} ${fmt.p(login)} ${fmt[up ? 'ubi' : 'i'](time)}`
+            recs.map(({ rank, login, nick, time, up, server }) =>
+                `${fmt[up ? 'ub' : 'n']('#'+rank)}: ${fmt.b(lrm+nick)} ${fmt.p(login)} ${fmt[up ? 'ubi' : 'i'](time)} on ${fmt.p(server)}`
             ).join('\n'),
         ).catch(console.warn)
     }

@@ -15,7 +15,9 @@ export function* perChannel({ env, uid }: TrackUpdate, allRecs: RecUpdate[]) {
         if (recs.length < cfg.min_recs) continue
 
         recs = recs.slice(0, cfg.top)
-        if (recs.every(({ up }) => !up)) continue
+        if (!recs.some(
+            ({ up, server }) => up && (cfg.servers.length ? cfg.servers.includes(server) : true)
+        )) continue
 
         if (!cfg.players.length) {
             recs = cfg.include_top ? recs : recs.filter(({ up }) => up)

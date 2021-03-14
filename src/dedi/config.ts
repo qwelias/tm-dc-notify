@@ -81,6 +81,14 @@ const options = {
         set: (cfg: ChannelDedi, values: string[]) => cfg.env = values[0],
         get: (cfg: ChannelDedi) => cfg.env,
     },
+    servers: {
+        desc: [
+            'Server logins. Default: none (any).',
+            'Will pass update only if it was affected by one of the servers',
+        ].join('\n'),
+        set: (cfg: ChannelDedi, values: string[]) => cfg.servers = values,
+        get: (cfg: ChannelDedi) => cfg.servers.join('\n') || null,
+    },
     include_top: {
         desc: [
             '1 or 0. Default: 0.',
@@ -175,6 +183,7 @@ const getDefault = () => ({
     top: 30,
     min_recs: 1,
     uids: [],
+    servers: [],
     mode: 'TAttack',
     include_top: false,
 } as ChannelDedi)
@@ -187,6 +196,7 @@ export type ChannelDedi = {
     top: number,
     min_recs: number,
     uids: string[],
+    servers: string[],
     mode: string,
     env?: string,
     include_top: boolean,
