@@ -101,7 +101,12 @@ const options = {
 }
 
 const commands = Object.assign((ch: TextChannel) => commands.help(ch), {
-    debug: (ch: TextChannel) => ch.send([process.uptime(), os.hostname(), os.uptime()].join('\n')),
+    debug: (ch: TextChannel) => ch.send([
+        process.uptime(),
+        os.hostname(),
+        os.uptime(),
+        config.dedi.lastUpdateAt,
+    ].join('\n')),
     start: Object.assign((ch: TextChannel) => {
         const cfg = config.dedi.channels[ch.id] || (config.dedi.channels[ch.id] = getDefault())
         if (cfg.enabled) return ch.send(`You what?`)
