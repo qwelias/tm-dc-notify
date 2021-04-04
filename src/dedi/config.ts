@@ -2,6 +2,7 @@ import { Message, TextChannel } from 'discord.js'
 import { fmt } from '../discord'
 import * as config from '../config'
 import * as R from 'remeda'
+import os from 'os'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -100,6 +101,7 @@ const options = {
 }
 
 const commands = Object.assign((ch: TextChannel) => commands.help(ch), {
+    debug: (ch: TextChannel) => ch.send([process.uptime(), os.hostname(), os.uptime()].join('\n')),
     start: Object.assign((ch: TextChannel) => {
         const cfg = config.dedi.channels[ch.id] || (config.dedi.channels[ch.id] = getDefault())
         if (cfg.enabled) return ch.send(`You what?`)
