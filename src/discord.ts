@@ -40,6 +40,11 @@ export const sendUpdate = async (id: string, text: string, upd?: boolean) => {
 export const sendEmbed = async (id: string, url: string, title: string, description: string) => {
     if (!isProd) return console.log(id, url, title, description)
 
+    if (description.length > 2000) { // description limit is 2000 chars
+        const lastCaret = description.slice(0, 2000).lastIndexOf('\n')
+        description = description.slice(0, lastCaret < 1 ? 2000 : lastCaret)
+    }
+
     const channel = client.channels.cache.get(id) as TextChannel
     return channel?.send({ embed: { url, title, description } })
 }
