@@ -1,4 +1,4 @@
-FROM node:14-alpine as builder
+FROM node:16-alpine as builder
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ RUN npm ci
 COPY . ./
 
 # resulting image
-FROM node:14-alpine
+FROM node:16-alpine
 
 WORKDIR /app
 COPY --from=builder /app ./
