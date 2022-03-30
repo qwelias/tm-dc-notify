@@ -10,7 +10,7 @@ const run = async function* () {
     await config.read()
 
     dedi.config.handle(await init([
-        process.env.F_CHANNEL as string,
+        process.env['F_CHANNEL'] as string,
         ...Object.keys(config.dedi.channels),
     ].filter(Boolean))).catch((reason) => {
         console.error(reason)
@@ -46,12 +46,12 @@ const friendsOnline = ((lastVips: string[], VIPs: string[]) => async () => {
 
     const liveVips = Object.keys(users).filter(u => VIPs.includes(u)).sort()
     sendUpdate(
-        process.env.F_CHANNEL as string,
+        process.env['F_CHANNEL'] as string,
         msg || ':(',
         liveVips.some(u => !lastVips.includes(u))
     ).catch(console.warn)
     lastVips = liveVips
-})([], process.env.F_VIPS?.split(';') || [])
+})([], process.env['F_VIPS']?.split(';') || [])
 
 const wait = promisify(setTimeout)
 

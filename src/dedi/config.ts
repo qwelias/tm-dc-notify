@@ -1,10 +1,10 @@
-import { Message, TextChannel } from 'discord.js'
+import type { Message, TextChannel } from 'discord.js'
 import { fmt } from '../discord'
 import * as config from '../config'
 import * as R from 'remeda'
 import os from 'os'
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = process.env['NODE_ENV'] === 'production'
 
 export const handle = async (msgIter: AsyncGenerator<Message>) => {
     for await (const msg of msgIter) {
@@ -13,7 +13,7 @@ export const handle = async (msgIter: AsyncGenerator<Message>) => {
             !msg.content.startsWith(`<@!${msg.client.user?.id}>`) &&
             !msg.content.startsWith(`<@${msg.client.user?.id}>`)
         ) continue
-        if (!msg.channel.isText() || msg.channel.type === 'dm') {
+        if (!msg.channel.isText() || msg.channel.type === 'DM') {
             msg.channel.send('nonono')
             continue
         }
@@ -22,9 +22,9 @@ export const handle = async (msgIter: AsyncGenerator<Message>) => {
         let node: CommandNode = commands
         const path = []
         while (tokens.length && Object.keys(node).length) {
-            const sub = tokens[0]
+            const sub = tokens[0] || ''
             if (!(sub in node)) break
-
+            //@ts-ignore
             node = node[sub]
             tokens.shift()
             path.push(sub)
@@ -79,7 +79,7 @@ const options = {
             'Environemet. Default: none (any).',
             'Consult dedimania.net for possible values.',
         ].join('\n'),
-        set: (cfg: ChannelDedi, values: string[]) => cfg.env = values[0],
+        set: (cfg: ChannelDedi, values: string[]) => cfg.env = values[0] || '',
         get: (cfg: ChannelDedi) => cfg.env,
     },
     servers: {
@@ -100,6 +100,7 @@ const options = {
     },
 }
 
+// @ts-ignore
 const commands = Object.assign((ch: TextChannel) => commands.help(ch), {
     debug: (ch: TextChannel) => ch.send([
         process.uptime(),
@@ -195,7 +196,9 @@ const getDefault = () => ({
     include_top: false,
 } as ChannelDedi)
 
-type CommandNode = ((ch: TextChannel, values?: string[]) => Promise<Message>) & { [sub: string]: CommandNode }
+type CommandNode =
+& ((ch: TextChannel, values?: string[]) => Promise<Message>)
+& { [sub: string]: CommandNode }
 
 export type ChannelDedi = {
     enabled: boolean,

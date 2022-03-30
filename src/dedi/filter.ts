@@ -1,7 +1,5 @@
-import * as R from 'remeda'
 import * as config from '../config'
-import { TrackUpdate, RecUpdate } from './mania'
-import { ChannelDedi } from './config'
+import type { TrackUpdate, RecUpdate } from './mania'
 
 export function* perChannel({ env, uid }: TrackUpdate, allRecs: RecUpdate[]) {
     for (const [chId, cfg] of Object.entries(config.dedi.channels)) {

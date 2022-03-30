@@ -6,8 +6,9 @@ import * as R from 'remeda'
 export const poll = async () => {
     const res = await login(await getCookie())
     const { document } = parseHTML(await res.text())
-    const [, ...list] = document.querySelectorAll('#ladder tr')
+    const [, ...list] = Array.from(document.querySelectorAll('#ladder tr'))
     return R.mergeAll(list.map(tr => {
+        // @ts-ignore
         let [nameE, onlineE, serverE] = tr.children
         if (!onlineE.children.length) return
 
@@ -26,12 +27,12 @@ export type Player = { name: string, server?: string }
 
 export const hash = ({ name, server }: Player) => name + '|' + server
 
-const request = makeRequest('https://player.trackmania.com')
+const request = makeRequest('https://players.trackmaniaforever.com')
 
 const getCookie = async () => {
-    const res = await request('/')
+    const res = await request('')
     // @ts-ignore yolo
-    return res.headers.get('set-cookie').split(';')[0]
+    return res.headers.get('set-cookie').split(';')[0] || ''
 }
 
 const login = async (cookie: string) => request(
@@ -39,8 +40,8 @@ const login = async (cookie: string) => request(
     {
         method: 'POST',
         body: qs.stringify({
-            login: process.env.F_LOGIN,
-            password: process.env.F_PASSWORD,
+            login: process.env['F_LOGIN'],
+            password: process.env['F_PASSWORD'],
             application: '',
             userlogin: '',
             redirection: '',

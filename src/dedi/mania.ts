@@ -4,7 +4,7 @@ import qs from 'querystring'
 import { promisify } from 'util'
 import * as config from '../config'
 import * as R from 'remeda'
-import { Response } from 'node-fetch'
+import type { Response } from 'node-fetch'
 
 const wait = promisify(setTimeout)
 
@@ -12,7 +12,7 @@ export const getNews = async () => {
     const since = config.dedi.lastUpdateAt
     const updates = await getUpdates(since)
     if (!updates.length) return []
-
+    // @ts-ignore
     config.dedi.lastUpdateAt = updates[0].at
     config.write()
 
@@ -26,13 +26,13 @@ const getUpdates = async (since: number) => {
     })).then(parseRecords)
 
     return updates.map(([, name, env, author,,,,, uid, at]) => {
-        if (Date.parse(at) <= since) return null
+        if (Date.parse(at || '') <= since) return null
         return {
             env,
             name,
             author,
             uid,
-            at: Date.parse(at),
+            at: Date.parse(at || ''),
         }
     }).filter(Boolean) as TrackUpdate[]
 }
@@ -68,7 +68,7 @@ const getRecs = async (uid: string, since: number) => {
             nick,
             time,
             server,
-            up: Date.parse(at) > since,
+            up: Date.parse(at || '') > since,
         } as RecUpdate
     })] as const
 }

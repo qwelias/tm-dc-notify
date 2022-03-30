@@ -1,20 +1,18 @@
-import DC, { TextChannel } from 'discord.js'
-import * as pEvent from 'p-event'
+import DC, { TextChannel, Intents } from 'discord.js'
+import * as PE from 'p-event/index'
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = process.env['NODE_ENV'] === 'production'
 let client: DC.Client
 
 export const init = async function* (channelIds: string[]) {
-    if (client) return client
-
-    client = new DC.Client()
+    client = new DC.Client({ intents: Intents.FLAGS.DIRECT_MESSAGES | Intents.FLAGS.GUILD_MESSAGES })
     client.once('disconnect', ded)
     client.once('error', ded)
-    client.login(process.env.B_TOKEN)
-    await pEvent.default(client, 'ready')
+    client.login(process.env['B_TOKEN'])
+    await PE.default(client, 'ready')
     await Promise.all(channelIds.map(cacheChannel))
 
-    yield* pEvent.iterator(client, 'message')
+    yield* PE.iterator(client, 'message')
 }
 
 export const cacheChannel = (id: string) => client.channels.fetch(id)
@@ -46,7 +44,7 @@ export const sendEmbed = async (id: string, url: string, title: string, descript
     }
 
     const channel = client.channels.cache.get(id) as TextChannel
-    return channel?.send({ embed: { url, title, description } })
+    return channel?.send({ embeds: [{ url, title, description }] })
 }
 
 type StringLike = { toString(): string }

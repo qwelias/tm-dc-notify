@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import { ChannelDedi } from './dedi/config'
+import type { ChannelDedi } from './dedi/config'
 
 export const dedi: {
     channels: { [channelId: string]: ChannelDedi },
