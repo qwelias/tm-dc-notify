@@ -63,3 +63,9 @@ const lrm = '\u200E'
     console.error(reason)
     process.exit(1)
 })
+
+// after some time whole thing just hangs without any errors anywhere
+// so kill it after a week, should get restarted
+wait(1000*60*60*24*7).then(() => {
+    process.exit(0)
+})
