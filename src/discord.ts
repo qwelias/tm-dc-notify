@@ -8,7 +8,7 @@ export const init = async function* (channelIds: string[]) {
     client = new DC.Client({ intents: Intents.FLAGS.DIRECT_MESSAGES | Intents.FLAGS.GUILD_MESSAGES })
     client.once('disconnect', ded)
     client.once('error', ded)
-    client.login(process.env['B_TOKEN'])
+    await client.login(process.env['B_TOKEN'])
     await PE.default(client, 'ready')
     await Promise.all(channelIds.map(cacheChannel))
 
